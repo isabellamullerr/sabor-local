@@ -1,0 +1,64 @@
+# ====================================
+# 🌐 GERAL
+# ====================================
+node_modules/
+dist/
+build/
+.env
+.env.local
+.env.*.local
+
+# ====================================
+# ⚛️ FRONTEND (Vite / React)
+# ====================================
+frontend/node_modules/
+frontend/dist/
+frontend/.vite/
+frontend/.DS_Store
+frontend/*.log
+frontend/npm-debug.log*
+frontend/yarn-debug.log*
+frontend/yarn-error.log*
+frontend/pnpm-debug.log*
+
+# ====================================
+# 🖥️ BACKEND (Node / Express)
+# ====================================
+backend/node_modules/
+backend/.DS_Store
+backend/*.log
+backend/npm-debug.log*
+backend/yarn-debug.log*
+backend/yarn-error.log*
+backend/pnpm-debug.log*
+backend/logs/
+backend/tmp/
+backend/dist/
+backend/.env
+
+# ====================================
+# 🧩 SISTEMAS E IDEs
+# ====================================
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# ====================================
+# 🧪 TESTES E COBERTURA
+# ====================================
+coverage/
+*.lcov
+
+# ====================================
+# 🚀 DEPLOY E BUILD
+# ====================================
+*.tar.gz
+*.tgz
+*.zip
+*.bak
+*.tmp
+*.cache/
+.cache/
