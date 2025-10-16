@@ -1,0 +1,63 @@
+name: Deploy to Vercel
+
+# Acionado apenas em push na branch master
+on:
+  push:
+    branches:
+      - master
+
+jobs:
+  deploy:
+    name: Deploy Frontend to Vercel
+    runs-on: ubuntu-latest
+    
+    steps:
+      # Checkout do código
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      # Setup do Node.js
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+          cache: 'npm'
+          cache-dependency-path: 'frontend/package-lock.json'
+
+      # Instalar dependências do frontend
+      - name: Install frontend dependencies
+        run: |
+          cd frontend
+          npm ci
+
+      # Build do frontend
+      - name: Build frontend
+        run: |
+          cd frontend
+          npm run build
+
+      # Instalar Vercel CLI
+      - name: Install Vercel CLI
+        run: npm install --global vercel@latest
+
+      # Deploy para produção na Vercel
+      - name: Pull Vercel Environment Information
+        run: vercel pull --yes --environment=production --token=${{ secrets.VERCEL_TOKEN }}
+        working-directory: ./frontend
+
+      # Build do projeto na Vercel
+      - name: Build Project Artifacts
+        run: vercel build --prod --token=${{ secrets.VERCEL_TOKEN }}
+        working-directory: ./frontend
+
+      # Deploy para produção
+      - name: Deploy Project Artifacts to Vercel
+        run: vercel deploy --prebuilt --prod --token=${{ secrets.VERCEL_TOKEN }}
+        working-directory: ./frontend
+
+      # Opcional: Notificação de sucesso
+      - name: Deployment Success
+        if: success()
+        run: |
+          echo "✅ Frontend deployed successfully to Vercel!"
+          echo "🚀 Check your Vercel dashboard for the production URL"
