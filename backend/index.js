@@ -1,7 +1,38 @@
 const express = require('express');
 const cors = require('cors');
-require('dotenv').config();
-const { query, testConnection } = require('./config/database');
+
+// Forçar modo MOCK (sem banco de dados) na produção até configurar AlwaysData
+const USE_MOCK_DATA = !process.env.DB_HOST || process.env.USE_MOCK === 'true';
+
+console.log('🔧 Modo de operação:', USE_MOCK_DATA ? 'MOCK DATA (sem banco)' : 'DATABASE (com banco)');
+
+// Variáveis para database (opcional)
+let query = null;
+let testConnection = null;
+
+// Tentar carregar variáveis de ambiente (opcional)
+try {
+  require('dotenv').config();
+} catch (error) {
+  console.log('⚠️ dotenv não disponível, usando configurações padrão');
+}
+
+// Tentar importar database apenas se não estiver em modo mock
+if (!USE_MOCK_DATA) {
+  try {
+    const db = require('./config/database');
+    query = db.query;
+    testConnection = db.testConnection;
+    console.log('✅ Database configurado e conectado');
+  } catch (error) {
+    console.log('⚠️ Database não configurado, forçando dados mockados');
+    console.log('Erro:', error.message);
+    query = null;
+    testConnection = null;
+  }
+} else {
+  console.log('✅ Usando dados mockados (mock data)');
+}
 
 const app = express();
 const PORT = process.env.PORT || 3001;
@@ -30,10 +61,51 @@ app.get('/api/health', (req, res) => {
 // Rota exemplo para produtos/restaurantes
 app.get('/api/restaurants', async (req, res) => {
   try {
-    const restaurants = await query(
-      'SELECT * FROM restaurants WHERE is_active = TRUE ORDER BY rating DESC'
-    );
-    res.json(restaurants);
+    // Se tiver banco de dados configurado, usar
+    if (query) {
+      const restaurants = await query(
+        'SELECT * FROM restaurants WHERE is_active = TRUE ORDER BY rating DESC'
+      );
+      res.json(restaurants);
+    } else {
+      // Dados mockados para quando não tiver banco configurado
+      const mockRestaurants = [
+        {
+          id: 1,
+          name: 'Restaurante Sabor Mineiro',
+          cuisine: 'Brasileira',
+          rating: 4.8,
+          address: 'Rua das Flores, 123',
+          city: 'São Paulo',
+          phone: '(11) 98765-4321',
+          description: 'Comida caseira mineira',
+          image_url: 'https://images.unsplash.com/photo-1555939594-58d7cb561ad1?w=400'
+        },
+        {
+          id: 2,
+          name: 'Pizzaria da Esquina',
+          cuisine: 'Italiana',
+          rating: 4.5,
+          address: 'Av. Paulista, 456',
+          city: 'São Paulo',
+          phone: '(11) 91234-5678',
+          description: 'Pizzas artesanais no forno a lenha',
+          image_url: 'https://images.unsplash.com/photo-1513104890138-7c749659a591?w=400'
+        },
+        {
+          id: 3,
+          name: 'Sushi House',
+          cuisine: 'Japonesa',
+          rating: 4.7,
+          address: 'Rua dos Pinheiros, 789',
+          city: 'São Paulo',
+          phone: '(11) 99876-5432',
+          description: 'Sushi fresco e tradicional',
+          image_url: 'https://images.unsplash.com/photo-1579584425555-c3ce17fd4351?w=400'
+        }
+      ];
+      res.json(mockRestaurants);
+    }
   } catch (error) {
     console.error('Erro ao buscar restaurantes:', error);
     res.status(500).json({ error: 'Erro ao buscar restaurantes' });
@@ -44,16 +116,51 @@ app.get('/api/restaurants', async (req, res) => {
 app.get('/api/restaurants/:id', async (req, res) => {
   try {
     const { id } = req.params;
-    const restaurants = await query(
-      'SELECT * FROM restaurants WHERE id = ? AND is_active = TRUE',
-      [id]
-    );
     
-    if (restaurants.length === 0) {
-      return res.status(404).json({ error: 'Restaurante não encontrado' });
+    if (query) {
+      const restaurants = await query(
+        'SELECT * FROM restaurants WHERE id = ? AND is_active = TRUE',
+        [id]
+      );
+      
+      if (restaurants.length === 0) {
+        return res.status(404).json({ error: 'Restaurante não encontrado' });
+      }
+      
+      res.json(restaurants[0]);
+    } else {
+      // Dados mockados
+      const mockRestaurants = {
+        '1': {
+          id: 1,
+          name: 'Restaurante Sabor Mineiro',
+          cuisine: 'Brasileira',
+          rating: 4.8,
+          address: 'Rua das Flores, 123',
+          city: 'São Paulo',
+          phone: '(11) 98765-4321',
+          description: 'Comida caseira mineira',
+          image_url: 'https://images.unsplash.com/photo-1555939594-58d7cb561ad1?w=400'
+        },
+        '2': {
+          id: 2,
+          name: 'Pizzaria da Esquina',
+          cuisine: 'Italiana',
+          rating: 4.5,
+          address: 'Av. Paulista, 456',
+          city: 'São Paulo',
+          phone: '(11) 91234-5678',
+          description: 'Pizzas artesanais no forno a lenha',
+          image_url: 'https://images.unsplash.com/photo-1513104890138-7c749659a591?w=400'
+        }
+      };
+      
+      const restaurant = mockRestaurants[id];
+      if (!restaurant) {
+        return res.status(404).json({ error: 'Restaurante não encontrado' });
+      }
+      res.json(restaurant);
     }
-    
-    res.json(restaurants[0]);
   } catch (error) {
     console.error('Erro ao buscar restaurante:', error);
     res.status(500).json({ error: 'Erro ao buscar restaurante' });
