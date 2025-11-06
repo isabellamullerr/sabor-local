@@ -1,12 +1,12 @@
 const express = require('express');
 const router = express.Router();
-const db = require('../config/database');
+const { pool } = require('../config/database');
 
 // GET - Listar todos os restaurantes
 router.get('/', async (req, res) => {
   try {
-    const connection = await db.getConnection();
-    const [rows] = await connection.query('SELECT * FROM restaurantes ORDER BY nome');
+    const connection = await pool.getConnection();
+    const [rows] = await connection.query('SELECT * FROM restaurants ORDER BY name');
     connection.release();
     
     res.json(rows);
@@ -23,8 +23,8 @@ router.get('/', async (req, res) => {
 router.get('/:id', async (req, res) => {
   try {
     const { id } = req.params;
-    const connection = await db.getConnection();
-    const [rows] = await connection.query('SELECT * FROM restaurantes WHERE id = ?', [id]);
+    const connection = await pool.getConnection();
+    const [rows] = await connection.query('SELECT * FROM restaurants WHERE id = ?', [id]);
     connection.release();
     
     if (rows.length === 0) {
