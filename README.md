@@ -303,3 +303,5 @@ Para problemas ou dúvidas:
 ---
 
 **Desenvolvido com ❤️ para valorizar produtores e restaurantes locais**
+#   F o r c e   r e d e p l o y  
+ 
