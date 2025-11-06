@@ -1,6 +1,7 @@
 {
   "version": 2,
   "builds": [
+    { "src": "api/**/*.js", "use": "@vercel/node" },
     {
       "src": "frontend/package.json",
       "use": "@vercel/static-build",
@@ -8,6 +9,7 @@
     }
   ],
   "routes": [
+    { "src": "/api/(.*)", "dest": "/api/$1" },
     { "src": "/assets/(.*)", "headers": { "cache-control": "max-age=31536000" } },
     { "src": "/(.*)", "dest": "/index.html" }
   ]

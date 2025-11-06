@@ -18,8 +18,15 @@ app.get('/', (req, res) => {
   });
 });
 
-// Rota de health check
+// Rota de health check (duas assinaturas para tolerar base path removido)
 app.get('/api/health', (req, res) => {
+  res.json({ 
+    status: 'OK',
+    service: 'Sabor Local Backend',
+    database: process.env.DB_HOST ? 'Configurado' : 'Não configurado'
+  });
+});
+app.get('/health', (req, res) => {
   res.json({ 
     status: 'OK',
     service: 'Sabor Local Backend',
@@ -30,7 +37,9 @@ app.get('/api/health', (req, res) => {
 // Importar e usar rotas de restaurantes
 try {
   const restaurantsRoutes = require('./routes/restaurants');
+  // Monta em /api/restaurants (produção) e também em /restaurants (casos onde /api é removido pelo gateway)
   app.use('/api/restaurants', restaurantsRoutes);
+  app.use('/restaurants', restaurantsRoutes);
   console.log('Rotas de restaurantes carregadas');
 } catch (error) {
   console.error('Erro ao carregar rotas: ' + error.message);
