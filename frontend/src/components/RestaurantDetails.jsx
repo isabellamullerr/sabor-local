@@ -13,7 +13,8 @@ function RestaurantDetails() {
     const fetchRestaurant = async () => {
       try {
         setLoading(true);
-        const response = await fetch(`/api/restaurants/${id}`);
+  const API_BASE = import.meta.env.VITE_API_URL || '';
+  const response = await fetch(`${API_BASE}/api/restaurants/${id}`);
         
         if (!response.ok) {
           throw new Error('Restaurante não encontrado');

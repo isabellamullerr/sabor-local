@@ -17,7 +17,8 @@ function RestaurantList() {
     const fetchRestaurants = async () => {
       try {
         setLoading(true);
-        const response = await fetch('/api/restaurants');
+        const API_BASE = import.meta.env.VITE_API_URL || '';
+        const response = await fetch(`${API_BASE}/api/restaurants`);
         
         if (!response.ok) {
           throw new Error('Erro ao carregar restaurantes');
