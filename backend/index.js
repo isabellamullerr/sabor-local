@@ -42,11 +42,13 @@ app.use((err, req, res, next) => {
   res.status(500).json({ error: 'Algo deu errado!', message: err.message });
 });
 
-// Inicializar servidor
-app.listen(PORT, () => {
-  console.log('Servidor rodando na porta ' + PORT);
-  console.log('Acesse: http://localhost:' + PORT);
-  console.log('Banco: ' + (process.env.DB_HOST || 'NAO configurado'));
-});
+// Inicializar servidor apenas em ambiente local (não em Vercel Serverless)
+if (!process.env.VERCEL) {
+  app.listen(PORT, () => {
+    console.log('Servidor rodando na porta ' + PORT);
+    console.log('Acesse: http://localhost:' + PORT);
+    console.log('Banco: ' + (process.env.DB_HOST || 'NAO configurado'));
+  });
+}
 
 module.exports = app;
