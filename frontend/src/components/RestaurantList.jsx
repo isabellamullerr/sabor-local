@@ -46,14 +46,14 @@ function RestaurantList() {
     if (searchTerm) {
       filtered = filtered.filter(restaurant =>
         restaurant.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        restaurant.cuisine.toLowerCase().includes(searchTerm.toLowerCase())
+        (restaurant.cuisine_type && restaurant.cuisine_type.toLowerCase().includes(searchTerm.toLowerCase()))
       );
     }
 
     // Filtro por culinária
     if (cuisineFilter) {
       filtered = filtered.filter(restaurant =>
-        restaurant.cuisine === cuisineFilter
+        restaurant.cuisine_type === cuisineFilter
       );
     }
 
@@ -112,7 +112,7 @@ function RestaurantList() {
             </div>
             <div className="restaurant-body">
               <p className="cuisine">
-                <span className="label">Culinária:</span> {restaurant.cuisine}
+                <span className="label">Culinária:</span> {restaurant.cuisine_type}
               </p>
               {restaurant.description && (
                 <p className="description-preview">{restaurant.description.substring(0, 80)}...</p>

@@ -80,7 +80,7 @@ function RestaurantDetails() {
           <div className="details-info">
             <div className="info-item">
               <span className="info-label">🍽️ Culinária:</span>
-              <span className="info-value">{restaurant.cuisine}</span>
+              <span className="info-value">{restaurant.cuisine_type}</span>
             </div>
 
             {restaurant.address && (
