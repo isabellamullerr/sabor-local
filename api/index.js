@@ -1,9 +1,8 @@
 // Wrapper para expor o Express app do backend como Serverless Function da Vercel
 const app = require('../backend/index.js');
 
-// Forçar caminho base /api para evitar colisão com rotas raiz do backend
-// (opcional: já usamos /api/* no frontend)
-
+// Normaliza path para garantir que /api/* chegue igual ao Express
 module.exports = (req, res) => {
+	// Nada especial: Express já lida com /api/health, /api/restaurants etc.
 	return app(req, res);
 };
