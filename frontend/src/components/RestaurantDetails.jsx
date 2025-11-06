@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import './RestaurantDetails.css';
+import { apiFetch } from '../lib/api';
 
 function RestaurantDetails() {
   const { id } = useParams();
@@ -13,14 +14,7 @@ function RestaurantDetails() {
     const fetchRestaurant = async () => {
       try {
         setLoading(true);
-  const API_BASE = import.meta.env.VITE_API_URL || '';
-  const response = await fetch(`${API_BASE}/api/restaurants/${id}`);
-        
-        if (!response.ok) {
-          throw new Error('Restaurante não encontrado');
-        }
-        
-        const data = await response.json();
+        const data = await apiFetch(`/api/restaurants/${id}`);
         setRestaurant(data);
         setError(null);
       } catch (err) {

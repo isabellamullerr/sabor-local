@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import SearchBar from './SearchBar';
 import LocationMap from './LocationMap';
+import { apiFetch } from '../lib/api';
 import './RestaurantList.css';
 
 function RestaurantList() {
@@ -17,14 +18,7 @@ function RestaurantList() {
     const fetchRestaurants = async () => {
       try {
         setLoading(true);
-        const API_BASE = import.meta.env.VITE_API_URL || '';
-        const response = await fetch(`${API_BASE}/api/restaurants`);
-        
-        if (!response.ok) {
-          throw new Error('Erro ao carregar restaurantes');
-        }
-        
-        const data = await response.json();
+        const data = await apiFetch('/api/restaurants');
         setRestaurants(data);
         setFilteredRestaurants(data);
         setError(null);
