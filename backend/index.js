@@ -31,9 +31,9 @@ app.get('/api/health', (req, res) => {
 try {
   const restaurantsRoutes = require('./routes/restaurants');
   app.use('/api/restaurants', restaurantsRoutes);
-  console.log(' Rotas de restaurantes carregadas');
+  console.log('Rotas de restaurantes carregadas');
 } catch (error) {
-  console.error(' Erro ao carregar rotas:', error.message);
+  console.error('Erro ao carregar rotas: ' + error.message);
 }
 
 // Middleware de erro
@@ -44,9 +44,9 @@ app.use((err, req, res, next) => {
 
 // Inicializar servidor
 app.listen(PORT, () => {
-  console.log( Servidor rodando na porta );
-  console.log( Acesse: http://localhost:);
-  console.log( Banco: );
+  console.log('Servidor rodando na porta ' + PORT);
+  console.log('Acesse: http://localhost:' + PORT);
+  console.log('Banco: ' + (process.env.DB_HOST || 'NAO configurado'));
 });
 
 module.exports = app;
