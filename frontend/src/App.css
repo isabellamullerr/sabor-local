@@ -21,6 +21,10 @@
   background: linear-gradient(135deg, var(--off-white) 0%, #FFE8DC 100%);
   display: flex;
   flex-direction: column;
+  /* Centraliza o site horizontalmente sem alterar o conteúdo */
+  max-width: 1200px;
+  width: 100%;
+  margin: 0 auto;
 }
 
 .app-header {
